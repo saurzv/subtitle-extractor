@@ -1,0 +1,20 @@
+{% extends 'base.html' %} {% block content %}
+<form action="/api/upload" method="post" enctype="multipart/form-data">
+  <div class="input-group">
+    <input
+      type="file"
+      class="form-control"
+      id="inputGroupFile04"
+      aria-describedby="inputGroupFileAddon04"
+      aria-label="Upload"
+    />
+    <button
+      class="btn btn-outline-secondary"
+      type="submit"
+      id="inputGroupFileAddon04"
+    >
+      Upload
+    </button>
+  </div>
+</form>
+{% endblock %}
