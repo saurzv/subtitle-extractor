@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     # my apps
     'pages',
     'api',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
