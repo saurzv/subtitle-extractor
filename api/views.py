@@ -3,6 +3,9 @@ from rest_framework.generics import CreateAPIView, ListAPIView
 from .tasks import generateSRT
 from .models import Subtitle
 from rest_framework import filters
+from server import celery_app
+from django.shortcuts import redirect
+from django.urls import reverse
 
 class SubtitleView(ListAPIView):
     serializer_class = SubtitleSerializer
@@ -19,5 +22,10 @@ class VideoView(CreateAPIView):
     def post(self, request, *args, **kwargs):
         video = request.data.get('file').name
         rsp = super().post(request, *args, **kwargs)
-        generateSRT.delay(video, rsp.data['id'])
-        return rsp
+        task_id = generateSRT.delay(video, rsp.data['id'])
+
+        while True :
+            task_staus = celery_app.AsyncResult(task_id).status
+
+            if task_staus == 'SUCCESS' :
+                return redirect(reverse('pages:subtitle', kwargs={'id':rsp.data['id']}))
