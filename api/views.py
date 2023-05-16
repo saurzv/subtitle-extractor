@@ -24,8 +24,4 @@ class VideoView(CreateAPIView):
         rsp = super().post(request, *args, **kwargs)
         task_id = generateSRT.delay(video, rsp.data['id'])
 
-        while True :
-            task_staus = celery_app.AsyncResult(task_id).status
-
-            if task_staus == 'SUCCESS' :
-                return redirect(reverse('pages:subtitle', kwargs={'id':rsp.data['id']}))
+        return rsp

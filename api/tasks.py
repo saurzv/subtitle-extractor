@@ -3,8 +3,16 @@ import os
 from celery import shared_task
 from django.conf import settings
 from .models import Subtitle
+import boto3
+from dotenv import load_dotenv
+import json
+
+load_dotenv()
 
 tempFolder=settings.MEDIA_ROOT
+
+AWS_ACCESS_KEY=os.getenv('AWS_ACCESS_KEY')
+AWS_SECRET_KEY=os.getenv('AWS_SECRET_KEY')
 
 # extract content, start time, end time and make a json object
 def parse_srt(path):
@@ -38,6 +46,9 @@ def generateSRT(self, video_name, video_id):
     sub_path = sub_name+'.srt'
 
     srt_list = parse_srt(sub_path)
-    for srt in srt_list :
-        Subtitle.objects.create(video_id=video_id, content=srt['content'], start_time=srt['start_time'], end_time=srt['end_time'])
+
+    dynamo_client  =  boto3.resource(service_name = 'dynamodb',region_name = 'ap-south-1',  aws_access_key_id =AWS_ACCESS_KEY, aws_secret_access_key = AWS_SECRET_KEY)
+    table = dynamo_client.Table('subs')
+    data = {'test-key-1':str(video_id), 'srt':json.dumps(srt_list)}
+    table.put_item(Item=data)
     os.remove(video_path)
