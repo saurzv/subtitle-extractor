@@ -15,9 +15,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-j1o6yx$)#^(jlbpi^t+fae6mxik!tcr6s04#-8v7!06a8p=s%9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'api',
     'rest_framework',
     'django_celery_results',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -113,24 +114,22 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATIC_ROOT='static/'
+STATIC_ROOT = 'static/'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = 'media/'
+if DEBUG:
+    MEDIA_URL = 'media/'
+    MEDIA_ROOT = 'media/'
+else:
+    from server.config import *
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL='redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
 CELERY_RESULT_BACKEND = 'django-db'
-
-config = {
-    'AWS_SECRET_KEY' : os.environ.get('AWS_SECRET_KEY'),
-    'AWS_ACCESS_KEY' : os.environ.get('AWS_ACCESS_KEY'),
-}

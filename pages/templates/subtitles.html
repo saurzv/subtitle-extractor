@@ -1,0 +1,41 @@
+{% extends 'base.html' %} {% block content %}
+<h1>Subtitles</h1>
+
+<form method="post">
+  <div class="input-group mb-3">
+    {% csrf_token %}
+    <input
+      type="text"
+      name="search"
+      class="form-control"
+      placeholder="Search words"
+      aria-label="query"
+      aria-describedby="button-addon2"
+    />
+    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">
+      Search
+    </button>
+  </div>
+</form>
+
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Index</th>
+      <th scope="col">Content</th>
+      <th scope="col">Start Time</th>
+      <th scope="col">End Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for subtitle in subtitles %}
+    <tr>
+      <th scope="row">{{ subtitle.index }}</th>
+      <td>{{ subtitle.content }}</td>
+      <td>{{ subtitle.start_time }}</td>
+      <td>{{ subtitle.end_time }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
