@@ -1,6 +1,10 @@
 {% extends 'base.html' %} {% block content %}
+<h1 class="position-absolute start-50 translate-middle">Subtitle Extractor</h1>
 <form action="/api/upload/" method="post" enctype="multipart/form-data">
-  <div class="input-group">
+  <div
+    class="input-group position-absolute top-50 start-50 translate-middle w-50"
+    id="input-form"
+  >
     {% csrf_token %}
     <input
       type="file"
@@ -9,6 +13,7 @@
       id="inputGroupFile04"
       aria-describedby="inputGroupFileAddon04"
       aria-label="Upload"
+      accept="video/*"
     />
     <button
       class="btn btn-outline-secondary"

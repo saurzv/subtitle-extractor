@@ -1,11 +1,18 @@
-from .serializers import VideoSerializer, SubtitleSerializer
+from rest_framework import filters
 from rest_framework.generics import CreateAPIView, ListAPIView
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse
+from server import celery_app
+from .serializers import VideoSerializer, SubtitleSerializer
 from .tasks import generateSRT
 from .models import Subtitle
-from rest_framework import filters
-from server import celery_app
-from django.shortcuts import redirect, HttpResponse
-from django.urls import reverse
+
+
+def statusView(request, task_id):
+    task = celery_app.AsyncResult(task_id)
+
+    return JsonResponse({'status': task.state})
 
 
 class SubtitleView(ListAPIView):
@@ -26,14 +33,9 @@ class VideoView(CreateAPIView):
         handle_upload(video)
         video_name = video.name
         res = super().post(request, *args, **kwargs)
-        task_id = generateSRT.delay(video_name, res.data['id'])
+        task = generateSRT.delay(video_name, res.data['id'])
 
-        while True:
-            task = celery_app.AsyncResult(task_id)
-            if task.state == 'SUCCESS':
-                return redirect(reverse('pages:subtitle', kwargs={'id': res.data['id']}))
-            elif task.status == 'FAILURE':
-                return HttpResponse({'error': 'Something went wrong'})
+        return redirect(reverse('pages:progress', kwargs={'task_id': task.task_id, 'id': res.data['id']}))
 
 
 def handle_upload(video):

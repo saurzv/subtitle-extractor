@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block script %}
+<script>
+  window.onload = function () {
+    function getStatus(url) {
+      fetch(url).then(function (response) {
+        response
+          .json()
+          .then(function (data) {
+            if (data.status === "SUCCESS") {
+              window.location.replace("{% url 'pages:subtitle' id %}");
+            } else if (data.status === "FALIURE") {
+              document.getElementById("progress").innerHTML =
+                "Error while extracting subtitle";
+              return;
+            }
+          })
+          .catch(function (error) {
+            console.log(error.message);
+          });
+      });
+      setInterval(getStatus, 10000, url);
+    }
+
+    var url = "{% url 'api:status' task_id %}";
+    getStatus(url);
+  };
+</script>
+{% endblock %} {% block content %}
+<div
+  class="card position-absolute top-50 start-50 translate-middle"
+  style="width: 18rem"
+  id="progress"
+>
+  <div class="card-body">
+    <h1 class="card-title">Please Wait</h1>
+    <p class="card-text">
+      Your video is being uploaded and subtitles are being extracted.
+    </p>
+  </div>
+</div>
+{% endblock %}
