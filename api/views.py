@@ -15,6 +15,7 @@ def statusView(request, task_id):
     return JsonResponse({'status': task.state})
 
 
+# Not used in production, used in testing
 class SubtitleView(ListAPIView):
     serializer_class = SubtitleSerializer
     filter_backends = [filters.SearchFilter]
