@@ -11,14 +11,14 @@
             } else if (data.status === "FAILURE") {
               document.getElementById("progress").innerHTML =
                 "Error while extracting subtitle";
-              return;
+              clearInterval(r);
             }
           })
           .catch(function (error) {
             console.log(error.message);
           });
       });
-      setInterval(getStatus, 10000, url);
+      var r = setInterval(getStatus, 1000, url);
     }
 
     var url = "{% url 'api:status' task_id %}";

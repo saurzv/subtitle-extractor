@@ -1,6 +1,11 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Subtitles</h1>
+<h1>
+  <a href="{% url 'pages:index' %}" style="text-decoration: none; color: black">
+    Subtitles Extractor</a
+  >
+</h1>
 
+{% if subtitles %}
 <form method="post">
   <div class="input-group mb-3">
     {% csrf_token %}
@@ -38,4 +43,18 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% else %}
+<a href="/" style="text-decoration: none; color: black">
+  <div
+    class="card position-absolute top-50 start-50 translate-middle"
+    style="width: 18rem"
+    id="progress"
+  >
+    <div class="card-body">
+      <h1 class="card-title">:(</h1>
+      <p class="card-text">No subtitle found in this video.</p>
+      <p class="card-text">Click this card to return to the home.</p>
+    </div>
+  </div>
+</a>
+{% endif %} {% endblock %}

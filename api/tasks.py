@@ -44,12 +44,13 @@ def generateSRT(self, video_name, video_id):
     os.system("ccextractor {} -o {}".format(video_path, subtitle_path))
     srt_list = parse_srt(subtitle_path)
 
-    dynamo_client = boto3.resource(service_name='dynamodb', region_name='ap-south-1',
-                                   aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    if srt_list:
+        dynamo_client = boto3.resource(service_name='dynamodb', region_name='ap-south-1',
+                                       aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
-    table = dynamo_client.Table('subs')
-    data = {'test-key-1': str(video_id), 'srt': json.dumps(srt_list)}
-    table.put_item(Item=data)
+        table = dynamo_client.Table('subs')
+        data = {'test-key-1': str(video_id), 'srt': json.dumps(srt_list)}
+        table.put_item(Item=data)
 
     os.remove(video_path)
     os.remove(subtitle_path)

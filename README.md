@@ -1,6 +1,6 @@
 # Subtitle Extractor
 
-[link](http://ec2-3-7-68-172.ap-south-1.compute.amazonaws.com)
+[link](http://ec2-65-2-63-22.ap-south-1.compute.amazonaws.com/)
 
 ---
 
